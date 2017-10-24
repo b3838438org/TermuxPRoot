@@ -9,7 +9,7 @@ sh /sdcard/Download/setupTermuxPRoot.sh
 
 ```  
 
-* Copying and pasting the following command lines into your Termux command shell is another way to get Arch on device. Hint, copy and paste the following:
+* Copying and pasting the following command lines into your Termux command shell is another way to get Linux on device. Hint, copy and paste the following:
 
 ```
 pkg install wget
@@ -18,7 +18,7 @@ sh setupTermuxPRoot.sh
 
 ```
 
-* Run the following command lines to install Arch Linux in Termux on your device. Hint, copy and paste the following into the Termux window: 
+* Run the following command lines to install Linux in Termux on your device. Hint, copy and paste the following into the Termux window: 
 
 ```
 pkg install git
@@ -30,7 +30,7 @@ cd ~ && git clone https://github.com/sdrausty/TermuxPRoot
 
 ![Linux on Android](https://s1.postimg.org/1aeg5aatvj/Screenshot_2017-10-18-06-09-29-831_com.termux.png)
 
-This setup script will attempt to set Arch Linux up in your Termux.  When successfully completed, you will be at a bash prompt in [Arch Linux](https://archlinuxarm.org) in [Termux](https://wiki.termux.com/) using an Android smartphone, tablet or a Chromebook.
+This setup script will attempt to set Linux up in your Termux.  When successfully completed, you will be at a bash prompt in Linux in [Termux](https://wiki.termux.com/) using an Android smartphone, tablet or a Chromebook.
 
 [![Community at Termux](https://termux.com/favicon.ico)](https://wiki.termux.com/wiki/Community)
 
