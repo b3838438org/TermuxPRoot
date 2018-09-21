@@ -1,13 +1,21 @@
-This Termux shell setup shell script will attempt to set Linux up in your Termux environment.  When successfully completed, you will be at the bash prompt with Linux in Termux on Android and Chrome in the palm of your hand. See [install.md](docs/install.md) for options how to run `setupTermuxPRoot.sh` on device.
+TermuxArch
+===============
+[![Join the chat at https://gitter.im/termux](https://badges.gitter.im/termux/termux.svg)](https://gitter.im/termux)
 
-Use `setupTermuxPRoot.sh` to install Linux in a Termux PRoot container on an Android and Chrome smartphone and tablet.  This setup script will attempt to set Linux up in your Termux environment.  When successfully completed, you will be at a bash prompt in Linux in Termux using an Android or Chrome smartphone or tablet. 
+This Termux bash shell script will attempt to set up Arch Linux on Amazon Fire OS, Android and Chromebook using [Termux](https://termux.com).
 
-* Comments are welcome at https://github.com/sdrausty/TermuxPRoot/issues ✍
+Install Arch Linux into a Termux PRoot container with [`bash setupTermuxArch.sh`](setupTermuxArch.sh). 
 
-* Pull requests are welcome https://github.com/sdrausty/TermuxPRoot/pulls ✍
+See https://sdrausty.github.io/TermuxArch/docs/install for options how to run [`setupTermuxArch.sh`](https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh) on device.  
 
-Thanks for making this project work; Please contribute 🔆 
+This repository uses submodules.  To get all the pieces of this repository run 
+```
+git submodule update --init --recursive
+``` 
+after cloning in the root directory of this repository.  
 
-Please visit the Termux wiki website at http://wiki.termux.com for more information about PRoot and Linux on device with Termux.
+* Comments are welcome at https://github.com/sdrausty/TermuxArch/issues ✍ 
+* Pull requests are welcome at https://github.com/sdrausty/TermuxArch/pulls ✍ 
 
-![Screenshot of Arch On Termux](https://s1.postimg.org/1ls79zf1jj/IMG_20171019_190414.jpg)
+Thank you for making this project work better and please contribute 🔆  [Contributors](CONTRIBUTORS.md) and [Notice to Contributors](NOTICE.md) have more information about this project.
+
