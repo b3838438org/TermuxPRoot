@@ -9,13 +9,10 @@
 addREADME() {
 	_CFLHDR_ root/bin/README.md 
 	cat > root/bin/README.md <<- EOM
-	This directory contains shortcut commands to automate and ease using the command line in Arch Linux in Termux PRoot.
+	This directory contains shortcut commands that automate and ease using the command line.
 	
-	* Comments are welcome at https://github.com/sdrausty/TermuxArch/issues ✍ 
-	* Pull requests are welcome at https://github.com/sdrausty/TermuxArch/pulls ✍ 
-	
-	Thank you for making this project work better, and please contribute 🔆 
-
+	* Comments welcome at https://github.com/sdrausty/TermuxArch/issues ✍ 
+	* Pull requests welcome at https://github.com/sdrausty/TermuxArch/pulls ✍ 
 	EOM
 }
 
@@ -95,8 +92,6 @@ addbashrc() {
 	alias ls='ls --color=always'
 	alias p='pwd'
 	alias pacman='pacman --color=always'
-	alias pcs='pacman -S --color=always'
-	alias pcss='pacman -Ss --color=always'
 	alias q='logout'
 	alias rf='rm -rf'
 	EOM
@@ -106,7 +101,7 @@ addbashrc() {
 }
 
 addcdtd() { 
-	_CFLHD_ root/bin/cdtd "# Usage: \`. cdtd\`  The dot sources \`cdtd\` which makes this shortcut script work."
+	_CFLHD_ root/bin/cdtd "# Usage: \`. cdtd\` the dot sources \`cdtd\` which makes this shortcut script work."
 	cat > root/bin/cdtd <<- EOM
 	#!/bin/env bash
 	cd "$HOME/storage/downloads" && pwd
@@ -115,7 +110,7 @@ addcdtd() {
 }
 
 addcdth() { 
-	_CFLHD_ root/bin/cdth "# Usage: \`. cdth\`  The dot sources \`cdth\` which makes this shortcut script work."
+	_CFLHD_ root/bin/cdth "# Usage: \`. cdth\` the dot sources \`cdth\` which makes this shortcut script work."
 	cat > root/bin/cdth <<- EOM
 	#!/bin/env bash
 	cd "$HOME" && pwd
@@ -124,7 +119,7 @@ addcdth() {
 }
 
 addcdtmp() { 
-	_CFLHD_ root/bin/cdtmp "# Usage: \`. cdtmp\`  The dot sources \`cdtmp\` which makes this shortcut script work."
+	_CFLHD_ root/bin/cdtmp "# Usage: \`. cdtmp\` the dot sources \`cdtmp\` which makes this shortcut script work."
 	cat > root/bin/cdtmp <<- EOM
 	#!/bin/env bash
 	cd "$PREFIX/tmp" && pwd
@@ -133,7 +128,7 @@ addcdtmp() {
 }
 
 addch() { 
-	_CFLHDR_ root/bin/ch "# Creates .hushlogin and .hushlogout file"
+	_CFLHDR_ root/bin/ch "# This script creates .hushlogin and .hushlogout files."
 	cat >> root/bin/ch <<- EOM
 	declare -a ARGS
 
@@ -173,7 +168,7 @@ addch() {
 }
 
 addexd() {
-	_CFLHDR_ root/bin/exd "# Usage: \`. exd\`  The dot sources \`exd\` which makes this shortcut script work."
+	_CFLHDR_ root/bin/exd "# Usage: \`. exd\` the dot sources \`exd\` which makes this shortcut script work."
 	cat >> root/bin/exd <<- EOM
 	export DISPLAY=:0 PULSE_SERVER=tcp:127.0.0.1:4712
 	EOM
@@ -207,17 +202,17 @@ addfbindprocshmem() {
 	EOM
 }
 
-addfbindprocstat() { # Chooses the appropriate four or eight processor stat file. 
-	nessor="$(grep cessor /proc/cpuinfo)"
-	ncessor="${nessor: -1}"
-	if [[ "$ncessor" -le "3" ]] 2>/dev/null ; then
-		addfbindprocstat4
+_ADDfbindprocstat_() { # Chooses the appropriate four or eight processor stat file. 
+	NESSOR="$(grep cessor /proc/cpuinfo)"
+	NCESSOR="${NESSOR: -1}"
+	if [[ "$NCESSOR" -le "3" ]] 2>/dev/null ; then
+		_ADDfbindprocstat4_
 	else
-		addfbindprocstat8
+		_ADDfbindprocstat8_
 	fi
 }
 
-addfbindprocstat4() {
+_ADDfbindprocstat4_() {
 	cat > var/binds/fbindprocstat <<- EOM
 	cpu  4232003 351921 6702657 254559583 519846 1828 215588 0 0 0
 	cpu0 1595013 127789 2759942 61446568 310224 1132 92124 0 0 0
@@ -234,7 +229,7 @@ addfbindprocstat4() {
 	EOM
 }
 
-addfbindprocstat6() {
+_ADDfbindprocstat6_() {
 	cat > var/binds/fbindprocstat <<- EOM
 	# cat /proc/stat
 	cpu  148928556 146012 6648853 2086709554 4518337 0 1314039 293017 0 0
@@ -254,7 +249,7 @@ addfbindprocstat6() {
 	EOM
 }
 
-addfbindprocstat8() {
+_ADDfbindprocstat8_() {
 	cat > var/binds/fbindprocstat <<- EOM
 	cpu  10278859 1073916 12849197 97940412 70467 2636 323477 0 0 0
 	cpu0 573749 46423 332546 120133 32 79 5615 0 0 0
@@ -276,7 +271,7 @@ addfbindprocstat8() {
 }
 
 addfbindexample() {
-	_CFLHDRS_ var/binds/fbindexample.prs "# To regenerate the start script use \`setupTermuxArch.sh re[fresh[\`.  Add as many proot statements as you want; The init script will parse this file at refresh.  Examples are included for convenience.  Usage: PROOTSTMNT+=\"-b host_path:guest_path \" The space before the last double quote is necessary." 
+	_CFLHDRS_ var/binds/fbindexample.prs "# To regenerate the start script use \`setupTermuxArch.sh re[fresh]\`.  Add as many proot statements as you want; The init script will parse this file at refresh.  Examples are included for convenience.  Usage: PROOTSTMNT+=\"-b host_path:guest_path \" The space before the last double quote is necessary." 
 	cat >> var/binds/fbindexample.prs <<- EOM
 	# PROOTSTMNT+="-b $INSTALLDIR/var/binds/fbindprocstat:/proc/stat " 
 	# if [[ ! -r /dev/shm ]] ; then 
@@ -287,7 +282,7 @@ addfbindexample() {
 
 addbinds() { # Checks if /proc/stat is usable. 
 	if [[ ! -r /proc/stat ]] ; then
-		addfbindprocstat
+		_ADDfbindprocstat_
 	fi
 }
 
@@ -401,10 +396,13 @@ addkeys() {
 	if [[ -z "\${1:-}" ]] ; then
 		KEYRINGS[0]="archlinux-keyring"
 		KEYRINGS[1]="archlinuxarm-keyring"
+		KEYRINGS[2]="ca-certificates-utils"
 	elif [[ "\$1" = x86 ]]; then
 		KEYRINGS[0]="archlinux32-keyring-transition"
+		KEYRINGS[1]="ca-certificates-utils"
 	elif [[ "\$1" = x86_64 ]]; then
 		KEYRINGS[0]="archlinux-keyring"
+		KEYRINGS[1]="ca-certificates-utils"
 	else
 		KEYRINGS="\$@"
 	fi
@@ -412,13 +410,14 @@ addkeys() {
 	printf '\033]2;  🔑🗝 TermuxArch '"\$(basename "\$0") \$ARGS"' 📲 \007'
 	printf "\\\\n\\\\e[1;32m==> \\\\e[1;37m%s \\\\e[0;32m%s \\\\e[1;32m%s %s \\\\e[0m%s…\\\\n" "Running" "TermuxArch" "\$(basename "\$0")" "\$ARGS" "\$VERSIONID"  
 	mv usr/lib/gnupg/scdaemon{,_} 2>/dev/null ||: 
-	printf "\n\e[0;34mWhen \e[0;37mgpg: Generating pacman keyring master key\e[0;34m appears on the screen, the installation process can be accelerated.  The system desires a lot of entropy at this part of the install procedure.  To generate as much entropy as possible quickly, watch and listen to a file on your device.  \n\nThe program \e[1;32mpacman-key\e[0;34m will want as much entropy as possible when generating keys.  Entropy is also created through tapping, sliding, one, two and more fingers tapping with short and long taps.  When \e[0;37mgpg: Generating pacman keyring master key\e[0;34m appears on the screen, use any of these simple methods to accelerate the installation process if it is stalled.  Put even simpler, just do something on device.  Browsing files will create entropy on device.  Slowly swiveling the device in space and time will accelerate the installation process.  This method alone might not generate enough entropy (a measure of randomness in a closed system) for the process to complete quickly.  Use \e[1;32mbash ~${darch}/bin/we \e[0;34min a new Termux session to and watch entropy on device.\n\n\e[1;32m==>\e[0m Running \e[1mpacman-key --init\e[0;32m…\n"
+	printf "\n\e[0;34mWhen \e[0;37mgpg: Generating pacman keyring master key\e[0;34m appears on the screen, the installation process can be accelerated.  The system desires a lot of entropy at this part of the install procedure.  To generate as much entropy as possible quickly, watch and listen to a file on your device.  \n\nThe program \e[1;32mpacman-key\e[0;34m will want as much entropy as possible when generating keys.  Entropy is also created through tapping, sliding, one, two and more fingers tapping with short and long taps.  When \e[0;37mgpg: Generating pacman keyring master key\e[0;34m appears on the screen, use any of these simple methods to accelerate the installation process if it is stalled.  Put even simpler, just do something on device.  Browsing files will create entropy on device.  Slowly swiveling the device in space and time will accelerate the installation process.  This method alone might not generate enough entropy (a measure of randomness in a closed system) for the process to complete quickly.  Use \e[1;32mbash ~${DARCH}/bin/we \e[0;34min a new Termux session to and watch entropy on device.\n\n\e[1;32m==>\e[0m Running \e[1mpacman-key --init\e[0;32m…\n"
 	_GENEN_
 	pacman-key --init ||: 
 	chmod 700 /etc/pacman.d/gnupg
+	pacman-key --populate ||: 
 	printf "\n\e[1;32m==>\e[0m Running \e[1mpacman -S \$ARGS --noconfirm --color=always\e[0;32m…\n"
 	pacman -S "\${KEYRINGS[@]}" --noconfirm --color=always ||: 
-	printf "\n\e[0;34mWhen \e[1;37mAppending keys from archlinux.gpg\e[0;34m appears on the screen, the installation process can be accelerated.  The system desires a lot of entropy at this part of the install procedure.  To generate as much entropy as possible quickly, watch and listen to a file on your device.  \n\nThe program \e[1;32mpacman-key\e[0;34m will want as much entropy as possible when generating keys.  Entropy is also created through tapping, sliding, one, two and more fingers tapping with short and long taps.  When \e[1;37mAppending keys from archlinux.gpg\e[0;34m appears on the screen, use any of these simple methods to accelerate the installation process if it is stalled.  Put even simpler, just do something on device.  Browsing files will create entropy on device.  Slowly swiveling the device in space and time will accelerate the installation process.  This method alone might not generate enough entropy (a measure of randomness in a closed system) for the process to complete quickly.  Use \e[1;32mbash ~${darch}/bin/we \e[0;34min a new Termux session to watch entropy on device.\n\n\e[1;32m==>\e[0m Running \e[1mpacman-key --populate\e[0;32m…\n"
+	printf "\n\e[0;34mWhen \e[1;37mAppending keys from archlinux.gpg\e[0;34m appears on the screen, the installation process can be accelerated.  The system desires a lot of entropy at this part of the install procedure.  To generate as much entropy as possible quickly, watch and listen to a file on your device.  \n\nThe program \e[1;32mpacman-key\e[0;34m will want as much entropy as possible when generating keys.  Entropy is also created through tapping, sliding, one, two and more fingers tapping with short and long taps.  When \e[1;37mAppending keys from archlinux.gpg\e[0;34m appears on the screen, use any of these simple methods to accelerate the installation process if it is stalled.  Put even simpler, just do something on device.  Browsing files will create entropy on device.  Slowly swiveling the device in space and time will accelerate the installation process.  This method alone might not generate enough entropy (a measure of randomness in a closed system) for the process to complete quickly.  Use \e[1;32mbash ~${DARCH}/bin/we \e[0;34min a new Termux session to watch entropy on device.\n\n\e[1;32m==>\e[0m Running \e[1mpacman-key --populate\e[0;32m…\n"
 	_GENEN_
 	pacman-key --populate ||: 
 	printf "\n\e[1;32m==>\e[0m Running \e[1mpacman -Ss keyring --color=always\e[0m…\n"
@@ -458,18 +457,22 @@ addpc() {
 	trap _TRPET_ EXIT
 	## pc begin ####################################################################
 
-	printf '\033]2;  🔑🗝 TermuxArch '"\$(basename "\$0") \$ARGS"' 📲 \007'
+	printf "\033]2;%s\007" " 🔑🗝 TermuxArch \$(basename "\$0") \$ARGS 📲 "
 	printf "\\\\n\\\\e[1;32m==> \\\\e[1;37m%s \\\\e[0;32m%s \\\\e[1;32m%s %s \\\e[0m%s…\\\\n\\\\n" "Running" "TermuxArch" "\$(basename "\$0")" "\$ARGS" "\$VERSIONID"  
-	if [[ -z "\${1:-}" ]] ; then
-	pacman --noconfirm --color=always -S 
-	elif [[ "\$1" = "a" ]] ; then
-	pacman --noconfirm --color=always -S base base-devel "\${@:2}" 
-	elif [[ "\$1" = "ae" ]] ; then
-	pacman --noconfirm --color=always -S base base-devel emacs "\${@:2}" 
-	elif [[ "\$1" = "a8" ]] ; then
-	pacman --noconfirm --color=always -S base base-devel emacs jdk8-openjdk "\${@:2}" 
+	if [[ -z "\${1:-}" ]] 
+	then
+	pacman -S --noconfirm --color=always 
+	elif [[ "\$1" = "a" ]] 
+	then
+	pacman -S base base-devel "\${@:2}" --noconfirm --color=always 
+	elif [[ "\$1" = "ae" ]] 
+	then
+	pacman -S base base-devel emacs "\${@:2}" --noconfirm --color=always 
+	elif [[ "\$1" = "a8" ]] 
+	then
+	pacman -S base base-devel emacs jdk8-openjdk "\${@:2}" --noconfirm --color=always 
 	else
-	pacman --noconfirm --color=always -S "\$@" 
+	pacman -S "\$@" --noconfirm --color=always 
 	fi
 	EOM
 	chmod 700 root/bin/pc 
@@ -496,18 +499,82 @@ addpci() {
 
 	printf "\\\\n\\\\e[1;32m==> \\\\e[1;37m%s \\\\e[1;32m%s %s %s \\\e[0m%s…\\\\n\\\\n" "Running" "TermuxArch \$(basename "\$0")" "\$ARGS" "\$VERSIONID"  
 	if [[ -z "\${1:-}" ]] ; then
-	pacman --noconfirm --color=always -Syu
+	pacman -Syu --noconfirm --color=always 
 	elif [[ "\$1" = "e" ]] ; then
-	pacman --noconfirm --color=always -Syu base base-devel emacs "\${@:2}" 
+	pacman -Syu base base-devel emacs "\${@:2}" --noconfirm --color=always  
 	elif [[ "\$1" = "e8" ]] ; then
-	pacman --noconfirm --color=always -Syu base base-devel emacs jdk8-openjdk "\${@:2}" 
+	pacman -Syu base base-devel emacs jdk8-openjdk "\${@:2}" --noconfirm --color=always  
 	elif [[ "\$1" = "e10" ]] ; then
-	pacman --noconfirm --color=always -Syu base base-devel emacs jdk10-openjdk "\${@:2}" 
+	pacman -Syu base base-devel emacs jdk10-openjdk "\${@:2}" --noconfirm --color=always  
 	else
-	pacman --noconfirm --color=always -Syu "\$@" 
+	pacman -Syu "\$@" --noconfirm --color=always  
 	fi
 	EOM
 	chmod 700 root/bin/pci 
+}
+
+addpcs() { 
+	_CFLHDR_ root/bin/pcs "# Pacman install packages wrapper with system update."
+	cat >> root/bin/pcs  <<- EOM
+	declare ARGS="\$@"
+
+	_TRPET_() { # on exit
+		printf "\\e[?25h\\e[0m"
+		set +Eeuo pipefail 
+	 	_PRINTTAIL_ "\$ARGS"  
+	}
+	
+	_PRINTTAIL_() { 
+		printf "\\\\a\\\\n\\\\e[0;32m%s %s %s\\\\a\\\\e[1;34m: \\\\a\\\\e[1;32m%s\\\\e[0m 🏁  \\\\n\\\\n\\\\a\\\\e[0m" "TermuxArch \$(basename "\$0")" "\$ARGS" "\$VERSIONID" "DONE"
+		printf '\033]2;  🔑🗝 TermuxArch '"\$(basename "\$0") \$ARGS"' 📱 \007'
+	}
+
+	trap _TRPET_ EXIT
+	## pci begin ###################################################################
+
+	printf "\\\\n\\\\e[1;32m==> \\\\e[1;37m%s \\\\e[1;32m%s %s %s \\\e[0m%s…\\\\n\\\\n" "Running" "TermuxArch \$(basename "\$0")" "\$ARGS" "\$VERSIONID"  
+	if [[ -z "\${1:-}" ]] ; then
+	pacman -S --color=always 
+	elif [[ "\$1" = "e" ]] ; then
+	pacman -Syu base base-devel emacs "\${@:2}" --color=always  
+	elif [[ "\$1" = "e8" ]] ; then
+	pacman -Syu base base-devel emacs jdk8-openjdk "\${@:2}" --color=always  
+	elif [[ "\$1" = "e10" ]] ; then
+	pacman -Syu base base-devel emacs jdk10-openjdk "\${@:2}" --color=always  
+	else
+	pacman -Syu "\$@" --color=always  
+	fi
+	EOM
+	chmod 700 root/bin/pcs 
+}
+	
+addpcss() { 
+	_CFLHDR_ root/bin/pcss "# Pacman install packages wrapper with system update."
+	cat >> root/bin/pcss  <<- EOM
+	declare ARGS="\$@"
+
+	_TRPET_() { # on exit
+		printf "\\e[?25h\\e[0m"
+		set +Eeuo pipefail 
+	 	_PRINTTAIL_ "\$ARGS"  
+	}
+	
+	_PRINTTAIL_() { 
+		printf "\\\\a\\\\n\\\\e[0;32m%s %s %s\\\\a\\\\e[1;34m: \\\\a\\\\e[1;32m%s\\\\e[0m 🏁  \\\\n\\\\n\\\\a\\\\e[0m" "TermuxArch \$(basename "\$0")" "\$ARGS" "\$VERSIONID" "DONE"
+		printf '\033]2;  🔑🗝 TermuxArch '"\$(basename "\$0") \$ARGS"' 📱 \007'
+	}
+
+	trap _TRPET_ EXIT
+	## pci begin ###################################################################
+
+	printf "\\\\n\\\\e[1;32m==> \\\\e[1;37m%s \\\\e[1;32m%s %s %s \\\e[0m%s…\\\\n\\\\n" "Running" "TermuxArch \$(basename "\$0")" "\$ARGS" "\$VERSIONID"  
+	if [[ -z "\${1:-}" ]] ; then
+	pacman -Ss --color=always 
+	else
+	pacman -Ss "\$@" --color=always  
+	fi
+	EOM
+	chmod 700 root/bin/pcss 
 }
 
 addprofile() {
@@ -770,8 +837,7 @@ addyt() {
 	_CFLHDR_ root/bin/yt
 	cat >> root/bin/yt  <<- EOM
 	if [ ! -e /usr/bin/youtube-dl ] ; then
-		pacman --noconfirm --color=always -S python-pip
-		pip install youtube-dl
+		pacman --noconfirm --color=always -S youtube-dl
 		youtube-dl "\$@"
 	else
 		youtube-dl "\$@"
@@ -780,4 +846,4 @@ addyt() {
 	chmod 700 root/bin/yt 
 }
 
-## EOF
+# EOF

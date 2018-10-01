@@ -34,6 +34,8 @@ _ADDADDS_() {
 	addmoto
 	addpc
 	addpci
+	addpcs
+	addpcss
 	addprofile 
 	addresolvconf 
 	addt 
@@ -137,37 +139,12 @@ _MAINBLOCK_() {
 	set -Eeuo pipefail
 	_PRINTSTARTBIN_USAGE_
 	_PRINTFOOTER2_
+	printf "\\n"
 }
 
 _MAKEFINISHSETUP_() {
 	BINFNSTP=finishsetup.sh  
 	_CFLHDR_ root/bin/"$BINFNSTP"
-	cat >> root/bin/"$BINFNSTP" <<- EOM
-	printf "\\n\\e[0;32m%s\\e[1;32m%s\\e[0;32m%s\\e[1;32m%s\\e[0;32m%s\\n\\n\\e[1;32m%s\\e[0;32m" "To generate locales in a preferred language use " "Settings > Language & Keyboard > Language " "in Android; Then run " "${0##*/} r " "for a quick system refresh; For full system refresh use ${0##*/} re[fresh]." "==> "
-   	locale-gen ||:
-	printf "\\n\\e[1;34m:: \\e[1;37mRemoving redundant packages for Termux PRoot installation…\\n"
-	EOM
-	if [[ -z "${lcr:-}" ]] ; then
-	 	if [[ "$CPUABI" = "$CPUABI5" ]];then
-	 		printf "pacman -Rc linux-armv5 linux-firmware --noconfirm --color=always 2>/dev/null ||:\\n" >> root/bin/"$BINFNSTP"
-	 	elif [[ "$CPUABI" = "$CPUABI7" ]];then
-	 		printf "pacman -Rc linux-armv7 linux-firmware --noconfirm --color=always 2>/dev/null ||:\\n" >> root/bin/"$BINFNSTP"
-	 	elif [[ "$CPUABI" = "$CPUABI8" ]];then
-	 		printf "pacman -Rc linux-aarch64 linux-firmware --noconfirm --color=always 2>/dev/null ||:\\n" >> root/bin/"$BINFNSTP"
-	 	fi
-		if [[ "$CPUABI" = "$CPUABIX86" ]];then
-			printf "./root/bin/keys x86\\n" >> root/bin/"$BINFNSTP"
-		elif [[ "$CPUABI" = "$CPUABIX86_64" ]];then
-			printf "./root/bin/keys x86_64\\n" >> root/bin/"$BINFNSTP"
-		else
-	 		printf "./root/bin/keys\\n" >> root/bin/"$BINFNSTP"
-		fi
-		if [[ "$CPUABI" = "$CPUABIX86" ]] || [[ "$CPUABI" = "$CPUABIX86_64" ]];then
-			printf "./root/bin/pci gzip sed \\n" >> root/bin/"$BINFNSTP"
-		else
-	 		printf "./root/bin/pci \\n" >> root/bin/"$BINFNSTP"
-		fi
-	fi
 	if [[ -e "$HOME"/.bash_profile ]];then
 		grep "proxy" "$HOME"/.bash_profile | grep "export" >> root/bin/"$BINFNSTP" 2>/dev/null ||:
 	fi
@@ -176,6 +153,42 @@ _MAKEFINISHSETUP_() {
 	fi
 	if [[ -e "$HOME"/.profile ]];then
 		grep "proxy" "$HOME"/.profile | grep "export" >> root/bin/"$BINFNSTP" 2>/dev/null ||:
+	fi
+	if [[ "${LCR:-}" != 2 ]]
+	then
+		cat >> root/bin/"$BINFNSTP" <<- EOM
+		printf "\\n\\e[0;32m%s\\e[1;32m%s\\e[0;32m%s\\e[1;32m%s\\e[0;32m%s\\n\\n\\e[1;32m%s\\e[0;32m" "To generate locales in a preferred language use " "Settings > Language & Keyboard > Language " "in Android; Then run " "${0##*/} r " "for a quick system refresh; For full system refresh use ${0##*/} refresh." "==> " 
+		locale-gen ||: 
+		EOM
+	fi
+	if [[ -z "${LCR:-}" ]] 
+	then
+		cat >> root/bin/"$BINFNSTP" <<- EOM
+		printf "\\n\\e[1;34m:: \\e[1;37mRemoving redundant packages for Termux PRoot installation…\\n" 
+		EOM
+		if [[ "$CPUABI" = "$CPUABI5" ]]
+		then
+			printf "pacman -Rc linux-armv5 linux-firmware --noconfirm --color=always 2>/dev/null ||:\\n" >> root/bin/"$BINFNSTP"
+		elif [[ "$CPUABI" = "$CPUABI7" ]]
+		then
+			printf "pacman -Rc linux-armv7 linux-firmware --noconfirm --color=always 2>/dev/null ||:\\n" >> root/bin/"$BINFNSTP"
+		elif [[ "$CPUABI" = "$CPUABI8" ]]
+		then
+			printf "pacman -Rc linux-aarch64 linux-firmware --noconfirm --color=always 2>/dev/null ||:\\n" >> root/bin/"$BINFNSTP"
+		fi
+		if [[ "$CPUABI" = "$CPUABIX86" ]];then
+			printf "./root/bin/keys x86\\n" >> root/bin/"$BINFNSTP"
+		elif [[ "$CPUABI" = "$CPUABIX86_64" ]];then
+			printf "./root/bin/keys x86_64\\n" >> root/bin/"$BINFNSTP"
+		else
+			printf "./root/bin/keys\\n" >> root/bin/"$BINFNSTP"
+		fi
+		if [[ "$CPUABI" = "$CPUABIX86" ]] || [[ "$CPUABI" = "$CPUABIX86_64" ]]
+		then
+			printf "./root/bin/pci gzip sed \\n" >> root/bin/"$BINFNSTP"
+		else
+			printf "./root/bin/pci \\n" >> root/bin/"$BINFNSTP"
+		fi
 	fi
 	cat >> root/bin/"$BINFNSTP" <<- EOM
 	printf "\\n\\e[1;34m%s  \\e[0m" "🕛 > 🕤 Arch Linux in Termux is installed and configured 📲 " 
@@ -200,10 +213,15 @@ _MAKESTARTBIN_() {
 	_CFLHDR_ "$STARTBIN" 
 	printf "%s\\n" "${FLHDRP[@]}" >> "$STARTBIN"
 	cat >> "$STARTBIN" <<- EOM
+	COMMANDIF="\$(command -v getprop)" ||:
+	if [[ "\$COMMANDIF" = "" ]] ; then
+ 		printf "\\n\\e[1;48;5;138m  %s\\e[0m\\n\\n" "\${0##*/} WARNING: Run \${0##*/} and $INSTALLDIR/\${0##*/} from the BASH shell in the OS system in Termux, e.g., Amazon Fire, Android and Chromebook."
+		exit 202
+	fi
 	declare -g ar2ar="\${@:2}"
 	declare -g ar3ar="\${@:3}"
 	_PRINTUSAGE_() { 
-	printf "\\n\\e[0;32mUsage:  \\e[1;32m$STARTBIN \\e[0;32mStart Arch Linux as root.  This account should only be reserved for system administration.\\n\\n	\\e[1;32m$STARTBIN command command \\e[0;32mRun Arch Linux command from Termux as root user.\\n\\n	\\e[1;32m$STARTBIN login user \\e[0;32mLogin as user.  Use \\e[1;32maddauser user \\e[0;32mfirst to create a user and the user's home directory.\\n\\n	\\e[1;32m$STARTBIN raw \\e[0;32mConstruct the \\e[1;32mstartarch \\e[0;32mproot statement.  For example \\e[1;32mstartarch raw su - user \\e[0;32mwill login to Arch Linux as user.  Use \\e[1;32maddauser user \\e[0;32mfirst to create a user and the user's home directory.\\n\\n	\\e[1;32m$STARTBIN su user command \\e[0;32mLogin as user and execute command.  Use \\e[1;32maddauser user \\e[0;32mfirst to create a user and the user's home directory.\\n\\n\\e[0m"'\033]2; TermuxArch '$STARTBIN' help 📲  \007' 
+	printf "\\n\\e[1;32m$STARTBIN\\e[0;32m: Start Arch Linux as root.  This account is reserved for system administration.\\n\\n\\e[1;32m$STARTBIN c[md] cmd\\e[0;32m: Run Arch Linux command from Termux as root user.\\n\\n\\e[1;32m$STARTBIN u[ser]|l[ogin] user\\e[0;32m: Login as user.  Use \\e[1;32m$STARTBIN addauser user \\e[0;32mfirst to create this user and user's home directory.\\n\\n\\e[1;32m$STARTBIN r[aw]\\e[0;32m: Construct the \\e[1;32m$STARTBIN \\e[0;32mproot statement from exec.../bin/.  For example \\e[1;32m$STARTBIN r su \\e[0;32mwill exec su in Arch Linux.\\n\\n\\e[1;32m$STARTBIN s[u] user cmd\\e[0;32m: Login as user and execute command.  Use \\e[1;32m$STARTBIN addauser user \\e[0;32mfirst to create this user and user's home directory.\\n\\n\\e[0m"'\033]2; TermuxArch '$STARTBIN' help 📲  \007' 
 	}
 
 	# [] Default Arch Linux in Termux PRoot root login.
@@ -228,7 +246,7 @@ _MAKESTARTBIN_() {
 		set -Eeuo pipefail
 		printf '\033]2; $STARTBIN command ARGS 📲  \007'
 		rm -f $INSTALLDIR/root/.chushlogin
-	# [login user|login user [options]] Login as user [plus options].  Use \`addauser user\` first to create this user and the user's home directory.
+	# [login user|login user [options]] Login as user [plus options].  Use \`addauser user\` first to create this user and user's home directory.
 	elif [[ "\${1//-}" = [Ll]* ]] || [[ "\${1//-}" = [Uu]* ]] ; then
 		printf '\033]2; $STARTBIN login user [options] 📲  \007'
 		set +Eeuo pipefail
@@ -237,7 +255,7 @@ _MAKESTARTBIN_() {
 	cat >> "$STARTBIN" <<- EOM
 		set -Eeuo pipefail
 		printf '\033]2; $STARTBIN login user [options] 📲  \007'
-	# [raw ARGS] Construct the \`startarch\` proot statement.  For example \`startarch r su - archuser\` will login as user archuser.  Use \`addauser user\` first to create this user and the user home directory.
+	# [raw ARGS] Construct the \`startarch\` proot statement.  For example \`startarch r su\` will exec su in Arch Linux.  See PROOTSTMNT for more options; share your thoughts at https://github.com/sdrausty/TermuxArch/issues and https://github.com/sdrausty/TermuxArch/pulls.
 	elif [[ "\${1//-}" = [Rr]* ]] ; then
 		printf '\033]2; $STARTBIN raw ARGS 📲  \007'
 		set +Eeuo pipefail
@@ -246,7 +264,7 @@ _MAKESTARTBIN_() {
 	cat >> "$STARTBIN" <<- EOM
 		set -Eeuo pipefail
 		printf '\033]2; $STARTBIN raw ARGS 📲  \007'
-	# [su user command] Login as user and execute command.  Use \`addauser user\` first to create this user and the user's home directory.
+	# [su user command] Login as user and execute command.  Use \`addauser user\` first to create this user and user's home directory.
 	elif [[ "\${1//-}" = [Ss]* ]] ; then
 		printf '\033]2; $STARTBIN su user command 📲  \007'
 		if [[ "\$2" = root ]];then
@@ -295,6 +313,177 @@ _MD5CHECK_() {
 	fi
 }
 
+_OPTIONS_() {
+## >>>>>>>>>>>>>>>>>>
+## >> OPTION  HELP >>
+## >>>>>>>>>>>>>>>>>>
+## []  Run default Arch Linux install. 
+if [[ -z "${1:-}" ]] ; then
+	_PREPTERMUXARCH_ 
+	intro "$@" 
+## [./path/systemimage.tar.gz [customdir]]  Use path to system image file; install directory argument is optional. A systemimage.tar.gz file can be substituted for network install: `setupTermuxArch.sh ./[path/]systemimage.tar.gz` and `setupTermuxArch.sh /absolutepath/systemimage.tar.gz`. 
+elif [[ "${ARGS:0:1}" = . ]] ; then
+ 	echo
+ 	echo Setting mode to copy system image.
+ 	lcc="1"
+ 	lcp="1"
+ 	_ARG2DIR_ "$@"  
+ 	intro "$@" 
+## [systemimage.tar.gz [customdir]]  Install directory argument is optional.  A systemimage.tar.gz file can substituted for network install.  
+# elif [[ "${WDIR}${ARGS}" = *.tar.gz* ]] ; then
+elif [[ "$ARGS" = *.tar.gz* ]] ; then
+	echo
+	echo Setting mode to copy system image.
+	lcc="1"
+	lcp="0"
+	_ARG2DIR_ "$@"  
+	intro "$@" 
+## [axd|axs]  Get device system information with `axel`.
+elif [[ "${1//-}" = [Aa][Xx][Dd]* ]] || [[ "${1//-}" = [Aa][Xx][Ss]* ]] ; then
+	echo
+	echo Getting device system information with \`axel\`.
+	dm=axel
+	shift
+	_ARG2DIR_ "$@" 
+	_INTROSYSINFO_ "$@" 
+## [ax[el] [customdir]|axi [customdir]]  Install Arch Linux with `axel`.
+elif [[ "${1//-}" = [Aa][Xx]* ]] || [[ "${1//-}" = [Aa][Xx][Ii]* ]] ; then
+	echo
+	echo Setting \`axel\` as download manager.
+	dm=axel
+	_OPT1_ "$@" 
+	intro "$@" 
+## [ad|as]  Get device system information with `aria2c`.
+elif [[ "${1//-}" = [Aa][Dd]* ]] || [[ "${1//-}" = [Aa][Ss]* ]] ; then
+	echo
+	echo Getting device system information with \`aria2c\`.
+	dm=aria2
+	shift
+	_ARG2DIR_ "$@" 
+	_INTROSYSINFO_ "$@" 
+## [a[ria2c] [customdir]|ai [customdir]]  Install Arch Linux with `aria2c`.
+elif [[ "${1//-}" = [Aa]* ]] ; then
+	echo
+	echo Setting \`aria2c\` as download manager.
+	dm=aria2
+	_OPT1_ "$@" 
+	intro "$@" 
+## [b[loom]]  Create and run a local copy of TermuxArch in TermuxArchBloom.  Useful for running a customized setupTermuxArch.sh locally, for developing and hacking TermuxArch.  
+elif [[ "${1//-}" = [Bb]* ]] ; then
+	echo
+	echo Setting mode to bloom. 
+	introbloom "$@"  
+## [cd|cs]  Get device system information with `curl`.
+elif [[ "${1//-}" = [Cc][Dd]* ]] || [[ "${1//-}" = [Cc][Ss]* ]] ; then
+	echo
+	echo Getting device system information with \`curl\`.
+	dm=curl
+	shift
+	_ARG2DIR_ "$@" 
+	_INTROSYSINFO_ "$@" 
+## [c[url] [customdir]|ci [customdir]]  Install Arch Linux with `curl`.
+elif [[ "${1//-}" = [Cc][Ii]* ]] || [[ "${1//-}" = [Cc]* ]] ; then
+	echo
+	echo Setting \`curl\` as download manager.
+	dm=curl
+	_OPT1_ "$@" 
+	intro "$@" 
+## [d[ebug]|s[ysinfo]]  Generate system information.
+elif [[ "${1//-}" = [Dd]* ]] || [[ "${1//-}" = [Ss]* ]] ; then
+	echo 
+	echo Setting mode to sysinfo.
+	shift
+	_ARG2DIR_ "$@" 
+	_INTROSYSINFO_ "$@" 
+## [he[lp]|?]  Display terse builtin help.
+elif [[ "${1//-}" = [Hh][Ee]* ]] || [[ "${1//-}" = [?]* ]] ; then
+	_ARG2DIR_ "$@" 
+	_PRINTUSAGE_ "$@"  
+## [h]  Display verbose builtin help.
+elif [[ "${1//-}" = [Hh]* ]] ; then
+	lcc="1"
+	_ARG2DIR_ "$@" 
+	_PRINTUSAGE_ "$@"  
+## [i[nstall] [customdir]]  Install Arch Linux in a custom directory.  Instructions: Install in USERSPACE. $HOME is appended to installation directory. To install Arch Linux in $HOME/customdir use `bash setupTermuxArch.sh install customdir`. In bash shell use `./setupTermuxArch.sh install customdir`.  All options can be abbreviated to one, two and three letters.  Hence `./setupTermuxArch.sh install customdir` can be run as `./setupTermuxArch.sh i customdir` in BASH.
+elif [[ "${1//-}" = [Ii]* ]] ; then
+	echo
+	echo Setting mode to install.
+	_OPT1_ "$@" 
+	intro "$@"  
+## [ld|ls]  Get device system information with `lftp`.
+elif [[ "${1//-}" = [Ll][Dd]* ]] || [[ "${1//-}" = [Ll][Ss]* ]] ; then
+	echo
+	echo Getting device system information with \`lftp\`.
+	dm=lftp
+	shift
+	_ARG2DIR_ "$@" 
+	_INTROSYSINFO_ "$@" 
+## [l[ftp] [customdir]]  Install Arch Linux with `lftp`.
+elif [[ "${1//-}" = [Ll]* ]] ; then
+	echo
+	echo Setting \`lftp\` as download manager.
+	dm=lftp
+	_OPT1_ "$@" 
+	intro "$@" 
+## [m[anual]]  Manual Arch Linux install, useful for resolving download issues.
+elif [[ "${1//-}" = [Mm]* ]] ; then
+	echo
+	echo Setting mode to manual.
+	OPT=manual
+	_OPT1_ "$@" 
+	intro "$@"  
+## [o[ption]]  Option under development.
+elif [[ "${1//-}" = [Oo]* ]] ; then
+	echo
+	echo Setting mode to option.
+	lcc="1"
+	_PRINTUSAGE_ "$@" 
+# 	_OPT0_ "$@" 
+## [p[urge] [customdir]]  Remove Arch Linux.
+elif [[ "${1//-}" = [Pp]* ]] ; then
+	echo 
+	echo Setting mode to purge.
+	_ARG2DIR_ "$@" 
+	_RMARCHQ_
+## [ref[resh] [customdir]]  Refresh the Arch Linux in Termux PRoot scripts created by TermuxArch and the installation itself.  Useful for refreshing the installation, kets, locales and the TermuxArch generated scripts to their newest versions.  
+elif [[ "${1//-}" = [Rr][Ee][Ff]* ]] ; then
+	echo 
+	echo Setting mode to refresh.
+	_ARG2DIR_ "$@" 
+	introrefresh "$@"  
+## [re [customdir]]  Refresh the Arch Linux in Termux PRoot scripts created by TermuxArch.  Useful for refreshing locales, the TermuxArch generated scripts with user directories to their newest versions.  
+elif [[ "${1//-}" = [Rr][Ee]* ]] ; then
+	LCR="2"
+	echo 
+	echo Setting mode to minimal refresh with user directories.
+	_ARG2DIR_ "$@" 
+	introrefresh "$@"  
+## [r [customdir]]  Refresh the Arch Linux in Termux PRoot scripts created by TermuxArch.  Useful for refreshing locales and the TermuxArch generated scripts to their newest versions.  
+elif [[ "${1//-}" = [Rr]* ]] ; then
+	LCR="1"
+	printf "\\n\\e[1;32m%s\\e[1;34m: \\e[0;32m%s \`%s\` %s\\n\\e[0m" "Setting mode" "minimal refresh;  Use" "${0##*/} ref[resh]" "for full refresh."
+	_ARG2DIR_ "$@" 
+	introrefresh "$@"  
+## [wd|ws]  Get device system information with `wget`.
+elif [[ "${1//-}" = [Ww][Dd]* ]] || [[ "${1//-}" = [Ww][Ss]* ]] ; then
+	echo
+	echo Getting device system information with \`wget\`.
+	dm=wget
+	shift
+	_ARG2DIR_ "$@" 
+	_INTROSYSINFO_ "$@" 
+## [w[get] [customdir]]  Install Arch Linux with `wget`.
+elif [[ "${1//-}" = [Ww]* ]] ; then
+	echo
+	echo Setting \`wget\` as download manager.
+	dm=wget
+	_OPT1_ "$@" 
+	intro "$@"  
+else
+	_PRINTUSAGE_
+fi
+}
+
 _PREPROOTDIR_() {
 	cd "$INSTALLDIR"
 	mkdir -p etc 
@@ -316,7 +505,7 @@ _PREPROOT_() {
 	if [[ "$CPUABI" = "$CPUABIX86" ]] || [[ "$CPUABI" = "$CPUABIX86_64" ]];then
  		proot --link2symlink -0 bsdtar -xpf "$file" --strip-components 1  
 	else
- 		proot --link2symlink -0 "$PREFIX"/bin/applets/tar -xpf "$file" 
+		proot --link2symlink -0 "$PREFIX"/bin/applets/tar -xpf "$file" 
 	fi
 }
 
@@ -407,4 +596,4 @@ _WAKEUNLOCK_() {
 	_PRINTDONE_ 
 }
 
-## EOF
+# EOF
